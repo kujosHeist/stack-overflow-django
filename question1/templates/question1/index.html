@@ -1,0 +1,110 @@
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+<div class="right_col" role="main">
+	<h1 class="text-center">Stock</h1>
+	<div class="space"></div>
+	<form class="stock-form form-group">
+	    {% csrf_token %}
+	    {{ form.as_p }}
+
+	    <input type="submit" name="Submit">
+  	</form>
+
+    <button class="btn btn-primary add-stock" id="add-button">Add</button>  
+</div>
+
+<div class="stock-list">
+  <table class="table table-striped stock-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Miti</th>
+      <th>Quantity</th>
+      <th>Value</th>
+      <th>Specification</th>
+      <th>Remarks</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+    <!--  here how should i show all those added items  -->
+  </tbody>
+</table>
+</div>
+
+<script
+src="https://code.jquery.com/jquery-3.2.1.min.js"
+integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+crossorigin="anonymous"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<script>
+	var itemCount = 0;
+	var objList = [];
+
+	$(document).ready(function() {
+
+		$("#add-button").on("click", function(){
+			
+			// store values in object and add them to list
+			var obj = {};
+			obj['date'] =  $('#id_miti').val();
+
+			// (adding itemCount to values so all they all aren't the same)
+			obj['quantity'] = $('#id_quantity').val() + itemCount; 
+			obj['value'] = $('#id_value').val() + itemCount;
+			obj['specification'] = $('#id_specification').val();
+			obj['remarks'] = $('#id_remarks').val();
+			objList.push(obj);
+
+			// add object to table
+			$("#table-body").append("<tr>");	          
+			$("#table-body").append("<td>" + (itemCount++) + "</td>");
+			$("#table-body").append("<td>" + obj['date'] + "</td>");
+			$("#table-body").append("<td>" + obj['quantity'] + "</td>");
+			$("#table-body").append("<td>" + obj['value'] + "</td>");
+			$("#table-body").append("<td>" + obj['specification'] + "</td>");
+			$("#table-body").append("<td>" + obj['remarks'] + "</td>");
+			$("#table-body").append("</tr>");
+			
+			console.log("Added object to table:")
+			console.log(obj);	
+		});
+
+
+		$('.stock-form').submit(function(e) {
+			e.preventDefault();
+
+			if(objList.length > 0){
+				var token = "{{csrf_token}}";
+
+				// loop through object list and post to back end
+				// could send them all together, but ajax/django handles list of objects
+				// awkwardly
+
+				for(var i = 0; i < objList.length; i++){
+					var data = objList[i];
+					data['csrfmiddlewaretoken'] = token
+
+					$.ajax({
+						type: 'post',
+						url: '',
+						data: data,
+						success: function(data) {
+							console.log("Success!")
+							console.log('data', data);
+						}
+					});			  			
+				}
+			}
+		});
+	});
+</script>
+
+
