@@ -23,6 +23,7 @@
   <thead>
     <tr>
       <th>#</th>
+      <th>Item</th>
       <th>Miti</th>
       <th>Quantity</th>
       <th>Value</th>
@@ -55,7 +56,7 @@ crossorigin="anonymous"></script>
 			// store values in object and add them to list
 			var obj = {};
 			obj['date'] =  $('#id_miti').val();
-
+			obj['item_id'] =  $('#id_item').val();	
 			// (adding itemCount to values so all they all aren't the same)
 			obj['quantity'] = $('#id_quantity').val() + itemCount; 
 			obj['value'] = $('#id_value').val() + itemCount;
@@ -63,8 +64,15 @@ crossorigin="anonymous"></script>
 			obj['remarks'] = $('#id_remarks').val();
 			objList.push(obj);
 
+
+			// get item name for displaying in table
+			var e = document.getElementById("id_item");
+			var itemName = e.options[e.selectedIndex].innerText;			
+
+		
 			// add object to table
 			$("#table-body").append("<tr>");	          
+			$("#table-body").append("<td>" + itemName + "</td>");
 			$("#table-body").append("<td>" + (itemCount++) + "</td>");
 			$("#table-body").append("<td>" + obj['date'] + "</td>");
 			$("#table-body").append("<td>" + obj['quantity'] + "</td>");

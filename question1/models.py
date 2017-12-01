@@ -1,12 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
-
-
-# Simplied model with foreign keys removed
-
+class Item(models.Model):
+	name = models.CharField(max_length=32)
+		
 class OpeningStock(models.Model):
-    
+    item = models.ForeignKey(Item, blank=True, null=True)
     miti = models.DateTimeField(null=True, default=timezone.now)
     quantity = models.PositiveIntegerField(default=34)
     value = models.DecimalField(default=2.5, max_digits=100, decimal_places=2)
